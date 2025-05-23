@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6fa;
+      color: #222;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: #181c24;
+      color: #e3eaf6;
+    }
+    .header {
+      background: #3a7bd5;
+      color: #fff;
+      padding: 30px 0 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(58,123,213,0.08);
+      position: relative;
+      transition: background 0.3s, color 0.3s;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 18px;
+      right: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.7em;
+      color: #fff;
+      transition: color 0.3s;
+      outline: none;
+    }
+    body.dark .header {
+      background: #232a37;
+      color: #e3eaf6;
+    }
+    body.dark .theme-toggle {
+      color: #7ecbff;
+    }
+    .main {
+      max-width: 700px;
+      margin: 40px auto 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(58,123,213,0.10);
+      padding: 32px 28px 40px 28px;
+      flex-grow: 1;
+      transition: background 0.3s, color 0.3s;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    body.dark .main {
+      background: #232a37;
+      color: #e3eaf6;
+    }
+    .hero h2 {
+      margin-top: 0;
+      font-size: 1.4em;
+      color: #3a7bd5;
+      transition: color 0.3s;
+    }
+    body.dark .hero h2 {
+      color: #7ecbff;
+    }
+    .hero button {
+      background: #3a7bd5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      margin: 8px 8px 8px 0;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .hero button:hover {
+      background: #28518a;
+    }
+    body.dark .hero button {
+      background: #28518a;
+      color: #7ecbff;
+    }
+    body.dark .hero button:hover {
+      background: #3a7bd5;
+      color: #fff;
+    }
+    #home, #server, #arm, #x86 {
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h3, h4 {
+      color: #28518a;
+      margin-bottom: 8px;
+      transition: color 0.3s;
+    }
+    body.dark h3, body.dark h4 {
+      color: #7ecbff;
+    }
+    .footer {
+      margin-top: 40px;
+      padding: 18px 0;
+      background: #e3eaf6;
+      color: #666;
+      text-align: center;
+      font-size: 0.98em;
+      border-top: 1px solid #d0d8e8;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark .footer {
+      background: #232a37;
+      color: #aaa;
+      border-top: 1px solid #2e3440;
+    }
+    @media (max-width: 800px) {
+      .main {
+        margin: 20px 8px;
+        padding: 18px 8px 24px 8px;
+      }
+    }
+    /* Квиз-стили */
+    .quiz-btn {
+      background: #fff;
+      color: #3a7bd5;
+      border: 2px solid #3a7bd5;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 16px;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    .quiz-btn:hover {
+      background: #3a7bd5;
+      color: #fff;
+    }
+    body.dark .quiz-btn {
+      background: #232a37;
+      color: #7ecbff;
+      border-color: #7ecbff;
+    }
+    body.dark .quiz-btn:hover {
+      background: #7ecbff;
+      color: #232a37;
+    }
+    .quiz-modal {
+      position: fixed;
+      top: 0; right: 0;
+      width: 340px;
+      height: 100%;
+      background: #f4f6fa;
+      box-shadow: -4px 0 24px rgba(58,123,213,0.10);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      animation: slideInRight 0.4s;
+      transition: background 0.3s;
+    }
+    @keyframes slideInRight {
+      from { right: -400px; opacity: 0;}
+      to { right: 0; opacity: 1;}
+    }
+    body.dark .quiz-modal {
+      background: #232a37;
+    }
+    .quiz-content {
+      width: 100%;
+      padding: 28px 24px 24px 24px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .quiz-close {
+      position: absolute;
+      top: 12px; right: 18px;
+      font-size: 1.6em;
+      color: #3a7bd5;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    body.dark .quiz-close {
+      color: #7ecbff;
+    }
+    .quiz-content h3 {
+      margin-top: 0;
+      color: #28518a;
+      transition: color 0.3s;
+    }
+    body.dark .quiz-content h3 {
+      color: #7ecbff;
+    }
+    .quiz-content button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      background: #3a7bd5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 0;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .quiz-content button:hover {
+      background: #28518a;
+    }
+    body.dark .quiz-content button {
+      background: #28518a;
+      color: #7ecbff;
+    }
+    body.dark .quiz-content button:hover {
+      background: #3a7bd5;
+      color: #fff;
+    }
+    #quiz-model {
+      margin: 16px 0 12px 0;
+      color: #222;
+      transition: color 0.3s;
+    }
+    body.dark #quiz-model {
+      color: #7ecbff;
+    }
+    @media (max-width: 800px) {
+      .quiz-modal {
+        width: 100vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Анализ видов и характеристик современных компьютеров</h1>
+    <button class="theme-toggle" id="theme-toggle" title="Переключить тему" aria-label="Переключить тему">
+      <span id="theme-icon">🌙</span>
+    </button>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <h2>Есть 2 основных вида компьютеров:</h2>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <button onclick="showType('home')">Домашние</button>
+          <button onclick="showType('server')">Сервисные</button>
+        </div>
+        <button class="quiz-btn" onclick="openQuiz()">📝 Квиз: подобрать компьютер</button>
+      </div>
+      <div id="home" style="display:none; margin-top: 20px;">
+        <h3>Домашние компьютеры</h3>
+        <p>Основные архитектуры процессоров:</p>
+        <button onclick="showArch('arm')">ARM</button>
+        <button onclick="showArch('x86')">x86</button>
+        <div id="arm" style="display:none; margin-top: 10px;">
+          <h4>ARM</h4>
+          <p>Используется в современных MacBook (Apple Silicon), отличается энергоэффективностью и высокой производительностью для повседневных задач.</p>
+        </div>
+        <div id="x86" style="display:none; margin-top: 10px;">
+          <h4>x86</h4>
+          <p>Классическая архитектура для ПК и ноутбуков (Intel, AMD), подходит для игр, работы и профессиональных задач.</p>
+        </div>
+        <div id="home-components" style="margin-top: 18px;">
+          <h4>А ещё в домашних компьютерах есть такие основные комплектующие:</h4>
+          <button onclick="showComponent('gpu')">Видеокарта</button>
+          <button onclick="showComponent('disk')">Диск (SSD/HDD)</button>
+          <button onclick="showComponent('ram')">Оперативная память (RAM)</button>
+          <button onclick="showComponent('cooling')">Охлаждение</button>
+          <button onclick="showComponent('mb')">Материнская плата</button>
+          <button onclick="showComponent('psu')">Блок питания</button>
+          <button onclick="showComponent('case')">Корпус</button>
+          <div id="gpu" style="display:none; margin-top: 10px;">
+            <h4>Видеокарта</h4>
+            <p>Отвечает за обработку графики, необходима для игр, работы с видео и 3D-графикой.</p>
+            <button onclick="showGpuType('regular')">Обычные</button>
+            <button onclick="showGpuType('pro')">Профессиональные</button>
+            <div id="gpu-regular" style="display:none; margin-top: 8px;">
+              <b>Обычные видеокарты</b> — используются в домашних ПК и ноутбуках для игр, фильмов и повседневных задач. Примеры: NVIDIA GeForce, AMD Radeon.<br>
+              <button onclick="showGpuBrand('nvidia')">NVIDIA</button>
+              <button onclick="showGpuBrand('amd')">AMD</button>
+              <div id="gpu-nvidia" style="display:none; margin-top: 8px;">
+                <b>NVIDIA GeForce</b>
+                <ul>
+                  <li>
+                    <button onclick="showGpuLine('rtx')">RTX</button>
+                    <button onclick="showGpuLine('gtx')">GTX</button>
+                  </li>
+                </ul>
+                <div id="gpu-line-rtx" style="display:none; margin-top: 6px;">
+                  <b>GeForce RTX</b> — современные игровые видеокарты с поддержкой трассировки лучей.<br>
+                  Примеры моделей: RTX 4060, RTX 4070, RTX 4080, RTX 4090.
+                </div>
+                <div id="gpu-line-gtx" style="display:none; margin-top: 6px;">
+                  <b>GeForce GTX</b> — популярные игровые видеокарты прошлых поколений.<br>
+                  Примеры моделей: GTX 1650, GTX 1660, GTX 1080 Ti.
+                </div>
+              </div>
+              <div id="gpu-amd" style="display:none; margin-top: 8px;">
+                <b>AMD Radeon</b>
+                <ul>
+                  <li>
+                    <button onclick="showGpuLine('rx')">RX</button>
+                  </li>
+                </ul>
+                <div id="gpu-line-rx" style="display:none; margin-top: 6px;">
+                  <b>Radeon RX</b> — современные игровые видеокарты AMD.<br>
+                  Примеры моделей: RX 6600, RX 6700 XT, RX 6800, RX 7900 XT.
+                </div>
+              </div>
+            </div>
+            <div id="gpu-pro" style="display:none; margin-top: 8px;">
+              <b>Профессиональные видеокарты</b> — очень дорогие, применяются для работы с 3D-графикой, CAD, научных расчетов и т.д. Пример: NVIDIA Quadro, AMD Radeon Pro.
+            </div>
+          </div>
+          <div id="disk" style="display:none; margin-top: 10px;">
+            <h4>Диск (SSD/HDD)</h4>
+            <p>Хранит все данные пользователя и системы. SSD обеспечивает быструю загрузку и работу, HDD — больше места за меньшие деньги.</p>
+          </div>
+          <div id="ram" style="display:none; margin-top: 10px;">
+            <h4>Оперативная память (RAM)</h4>
+            <p>Позволяет компьютеру работать с несколькими задачами одновременно, влияет на скорость работы программ.</p>
+          </div>
+          <div id="cooling" style="display:none; margin-top: 10px;">
+            <h4>Охлаждение</h4>
+            <p>Не даёт компьютеру перегреваться, продлевает срок службы комплектующих.</p>
+          </div>
+          <div id="mb" style="display:none; margin-top: 10px;">
+            <h4>Материнская плата</h4>
+            <p>Соединяет все компоненты компьютера, обеспечивает их взаимодействие.</p>
+          </div>
+          <div id="psu" style="display:none; margin-top: 10px;">
+            <h4>Блок питания</h4>
+            <p>Подаёт электричество на все комплектующие, важен для стабильной работы системы.</p>
+          </div>
+          <div id="case" style="display:none; margin-top: 10px;">
+            <h4>Корпус</h4>
+            <p>Защищает внутренние части компьютера и обеспечивает их охлаждение.</p>
+          </div>
+        </div>
+      </div>
+      <div id="server" style="display:none; margin-top: 20px;">
+        <h3>Сервисные компьютеры (серверы)</h3>
+        <p>Часто используют процессоры AMD Threadripper и архитектуру Power для высокой производительности и надёжности.</p>
+      </div>
+    </section>
+    <style>
+      .quiz-btn {
+        background: #fff;
+        color: #3a7bd5;
+        border: 2px solid #3a7bd5;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        margin-left: 16px;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+      .quiz-btn:hover {
+        background: #3a7bd5;
+        color: #fff;
+      }
+      .quiz-modal {
+        position: fixed;
+        top: 0; right: 0;
+        width: 340px;
+        height: 100%;
+        background: #f4f6fa;
+        box-shadow: -4px 0 24px rgba(58,123,213,0.10);
+        z-index: 1000;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        animation: fadeIn 0.3s;
+      }
+      .quiz-content {
+        width: 100%;
+        padding: 28px 24px 24px 24px;
+        box-sizing: border-box;
+        position: relative;
+      }
+      .quiz-close {
+        position: absolute;
+        top: 12px; right: 18px;
+        font-size: 1.6em;
+        color: #3a7bd5;
+        cursor: pointer;
+      }
+      .quiz-content h3 {
+        margin-top: 0;
+        color: #28518a;
+      }
+      .quiz-content button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        background: #3a7bd5;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 0;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .quiz-content button:hover {
+        background: #28518a;
+      }
+      #quiz-model {
+        margin: 16px 0 12px 0;
+        color: #222;
+      }
+      @media (max-width: 800px) {
+        .quiz-modal {
+          width: 100vw;
+        }
+      }
+    </style>
+    <script>
+      function showType(type) {
+        document.getElementById('home').style.display = type === 'home' ? 'block' : 'none';
+        document.getElementById('server').style.display = type === 'server' ? 'block' : 'none';
+        document.getElementById('arm').style.display = 'none';
+        document.getElementById('x86').style.display = 'none';
+        const components = ['gpu','disk','ram','cooling','mb','psu','case'];
+        components.forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById('gpu-regular').style.display = 'none';
+        document.getElementById('gpu-pro').style.display = 'none';
+        document.getElementById('gpu-nvidia').style.display = 'none';
+        document.getElementById('gpu-amd').style.display = 'none';
+        document.getElementById('gpu-line-rtx').style.display = 'none';
+        document.getElementById('gpu-line-gtx').style.display = 'none';
+        document.getElementById('gpu-line-rx').style.display = 'none';
+      }
+      function showArch(arch) {
+        document.getElementById('arm').style.display = arch === 'arm' ? 'block' : 'none';
+        document.getElementById('x86').style.display = arch === 'x86' ? 'block' : 'none';
+      }
+      function showComponent(comp) {
+        const components = ['gpu','disk','ram','cooling','mb','psu','case'];
+        components.forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById(comp).style.display = 'block';
+        if (comp !== 'gpu') {
+          document.getElementById('gpu-regular').style.display = 'none';
+          document.getElementById('gpu-pro').style.display = 'none';
+          document.getElementById('gpu-nvidia').style.display = 'none';
+          document.getElementById('gpu-amd').style.display = 'none';
+          document.getElementById('gpu-line-rtx').style.display = 'none';
+          document.getElementById('gpu-line-gtx').style.display = 'none';
+          document.getElementById('gpu-line-rx').style.display = 'none';
+        }
+      }
+      function showGpuType(type) {
+        document.getElementById('gpu-regular').style.display = type === 'regular' ? 'block' : 'none';
+        document.getElementById('gpu-pro').style.display = type === 'pro' ? 'block' : 'none';
+        // Скрываем бренды и линейки при переключении типа
+        document.getElementById('gpu-nvidia').style.display = 'none';
+        document.getElementById('gpu-amd').style.display = 'none';
+        document.getElementById('gpu-line-rtx').style.display = 'none';
+        document.getElementById('gpu-line-gtx').style.display = 'none';
+        document.getElementById('gpu-line-rx').style.display = 'none';
+      }
+      function showGpuBrand(brand) {
+        document.getElementById('gpu-nvidia').style.display = brand === 'nvidia' ? 'block' : 'none';
+        document.getElementById('gpu-amd').style.display = brand === 'amd' ? 'block' : 'none';
+        document.getElementById('gpu-line-rtx').style.display = 'none';
+        document.getElementById('gpu-line-gtx').style.display = 'none';
+        document.getElementById('gpu-line-rx').style.display = 'none';
+      }
+      function showGpuLine(line) {
+        document.getElementById('gpu-line-rtx').style.display = line === 'rtx' ? 'block' : 'none';
+        document.getElementById('gpu-line-gtx').style.display = line === 'gtx' ? 'block' : 'none';
+        document.getElementById('gpu-line-rx').style.display = line === 'rx' ? 'block' : 'none';
+      }
+    </script>
+  </main>
+  <footer class="footer">P.S. мне было максимально лень делать что-то серьезное, прошу понять и простить :D</footer>
+
+  <!-- Квиз -->
+  <div id="quiz-modal" class="quiz-modal" style="display:none;">
+    <div class="quiz-content">
+      <span class="quiz-close" onclick="closeQuiz()">&times;</span>
+      <h3>Квиз: какой компьютер вам нужен?</h3>
+      <div id="quiz-step-1">
+        <p><b>1. Для чего вам нужен компьютер?</b></p>
+        <button onclick="quizNext('office')">Учёба/офис</button>
+        <button onclick="quizNext('games')">Игры</button>
+        <button onclick="quizNext('pro')">Профессиональная работа (монтаж, 3D, CAD)</button>
+        <button onclick="quizNext('internet')">Интернет/фильмы</button>
+      </div>
+      <div id="quiz-step-2" style="display:none;">
+        <p><b>2. Какой у вас бюджет?</b></p>
+        <button onclick="quizResult('low')">До 20 000 ₴</button>
+        <button onclick="quizResult('mid')">20 000 – 35 000 ₴</button>
+        <button onclick="quizResult('high')">35 000 ₴ и выше</button>
+      </div>
+      <div id="quiz-result" style="display:none;">
+        <h4>Вам подойдёт:</h4>
+        <div id="quiz-model"></div>
+        <button onclick="restartQuiz()">Пройти ещё раз</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    let quizPurpose = '';
+    function openQuiz() {
+      document.getElementById('quiz-modal').style.display = 'flex';
+      document.getElementById('quiz-step-1').style.display = 'block';
+      document.getElementById('quiz-step-2').style.display = 'none';
+      document.getElementById('quiz-result').style.display = 'none';
+    }
+    function closeQuiz() {
+      document.getElementById('quiz-modal').style.display = 'none';
+    }
+    function quizNext(purpose) {
+      quizPurpose = purpose;
+      document.getElementById('quiz-step-1').style.display = 'none';
+      document.getElementById('quiz-step-2').style.display = 'block';
+    }
+    function quizResult(budget) {
+      document.getElementById('quiz-step-2').style.display = 'none';
+      document.getElementById('quiz-result').style.display = 'block';
+      let model = '';
+      // Реалистичный подбор
+      if (quizPurpose === 'office') {
+        if (budget === 'low') model = 'Базовый офисный ПК: Intel Core i3/Ryzen 3, 8 ГБ RAM, SSD 240–256 ГБ, встроенная графика. Можно собрать новый или взять б/у ноутбук.';
+        else if (budget === 'mid') model = 'Универсальный офисный ПК: Intel Core i5/Ryzen 5, 16 ГБ RAM, SSD 480–512 ГБ. Можно рассмотреть новые ноутбуки среднего класса.';
+        else model = 'Максимально комфортная работа: MacBook Air (M1/M2) или ультрабук на Windows (Core i5/i7, 16–32 ГБ RAM, SSD 512 ГБ+).';
+      } else if (quizPurpose === 'games') {
+        if (budget === 'low') model = 'Б/у игровой ПК: Ryzen 5 или Core i5 8–9 поколения, 16 ГБ RAM, GeForce GTX 1060/1650, SSD 480 ГБ. Новое железо в этом бюджете — только для нетребовательных игр.';
+        else if (budget === 'mid') model = 'Новый игровой ПК: Ryzen 5 5600 или Core i5 12400F, 16–32 ГБ RAM, GeForce RTX 3060/4060, SSD 1 ТБ.';
+        else model = 'Топовый игровой ПК: Ryzen 7/Core i7, 32–64 ГБ RAM, GeForce RTX 4070/4080/4090, SSD 2 ТБ+. Можно рассмотреть MacBook Pro M3 Max для игр на Mac.';
+      } else if (quizPurpose === 'pro') {
+        if (budget === 'low') model = 'ПК для работы с графикой: Ryzen 7/Core i7 (б/у), 16–32 ГБ RAM, GeForce RTX 3060/3070, SSD 1 ТБ. Для CAD и 3D — лучше искать б/у рабочие станции.';
+        else if (budget === 'mid') model = 'Профессиональный ПК: Ryzen 9/Core i7, 32–64 ГБ RAM, RTX 4060/4070, SSD 2 ТБ. Для macOS — MacBook Pro M1/M2 Pro.';
+        else model = 'Рабочая станция: Threadripper/Xeon, 64+ ГБ RAM, NVIDIA Quadro/RTX 4080+, SSD 4 ТБ+. Или MacBook Pro M3 Max.';
+      } else if (quizPurpose === 'internet') {
+        if (budget === 'low') model = 'Б/у ноутбук: Core i3/i5 6–8 поколения, 8 ГБ RAM, SSD 240–256 ГБ. Для браузера и фильмов хватит.';
+        else if (budget === 'mid') model = 'Новый ноутбук: Core i5/Ryzen 5, 8–16 ГБ RAM, SSD 512 ГБ. Можно рассмотреть MacBook Air M1.';
+        else model = 'Макбук: MacBook Air M2/M3 или ультрабук на Windows (Core i7, 16–32 ГБ RAM, SSD 1 ТБ).';
+      }
+      document.getElementById('quiz-model').innerText = model;
+    }
+    function restartQuiz() {
+      document.getElementById('quiz-step-1').style.display = 'block';
+      document.getElementById('quiz-step-2').style.display = 'none';
+      document.getElementById('quiz-result').style.display = 'none';
+    }
+
+    // Тема
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    function setTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '☀️';
+      } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+      }
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+    themeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark'));
+    });
+    // При загрузке
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') setTheme(true);
+      else setTheme(false);
+    })();
+  </script>
+</body>
+</html>
